@@ -5,14 +5,15 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [taskText, setTaskText] = useState('');
   
-  // Точната патека до вашето PHP REST API во XAMPP
+  // Endpoint URL pointing to the local PHP REST API
   const API_URL = 'http://localhost/todo-api/api.php';
 
-  // 1. Автоматски ги зема сите задачи од базата при вчитување
+  // Fetch task operations on initial component mount lifecycle
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  // 1. Fetch data operation - GET query request to PHP
   const fetchTasks = () => {
     fetch(API_URL)
       .then(response => response.json())
@@ -26,7 +27,7 @@ function App() {
       .catch(error => console.error('Error fetching tasks:', error));
   };
 
-  // 2. Функција за додавање нова задача (POST)
+  // 2. Form submission handler - POST query request to add tasks
   const handleAddTask = (e) => {
     e.preventDefault();
     if (!taskText.trim()) return;
@@ -38,20 +39,20 @@ function App() {
     })
       .then(response => response.json())
       .then(() => {
-        setTaskText(''); // Го чисти полето за внес
-        fetchTasks();   // Ја освежува листата со задачи
+        setTaskText(''); // Clear input fields
+        fetchTasks();   // Reload application data stream
       })
       .catch(error => console.error('Error adding task:', error));
   };
 
-  // 3. Функција за бришење задача (DELETE)
+  // 3. User interaction handler - DELETE request to clear specific items
   const handleDeleteTask = (id) => {
     fetch(`${API_URL}?id=${id}`, {
       method: 'DELETE'
     })
       .then(response => response.json())
       .then(() => {
-        fetchTasks(); // Ја освежува листата по бришењето
+        fetchTasks(); // Refresh app layout view sync
       })
       .catch(error => console.error('Error deleting task:', error));
   };
@@ -60,7 +61,7 @@ function App() {
     <div className="todo-container">
       <h2>My React & PHP Task Manager</h2>
       
-      {/* Форма за внесување */}
+      {/* Component layout form container view */}
       <form onSubmit={handleAddTask} className="todo-form">
         <input 
           type="text" 
@@ -73,7 +74,7 @@ function App() {
         <button type="submit">Add Task</button>
       </form>
 
-      {/* Листа на задачи */}
+      {/* Rendered dynamic dataset array tracking task entries */}
       <ul className="task-list">
         {tasks.length > 0 ? (
           tasks.map(task => (
